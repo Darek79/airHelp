@@ -9,6 +9,7 @@ interface CompProps {
   color?: string;
   formp: string;
   userInput: RefObject<HTMLInputElement>;
+  isDiabled: boolean;
 }
 
 import {ErrorComp} from "./ErrorComp";
@@ -26,31 +27,17 @@ export const SearchBar: React.FC<CompProps> = ({
   color,
   formp,
   userInput,
+  isDiabled,
 }): JSX.Element => {
-  const router = useRouter();
-
   const [error, setError] = useState<string>("");
-  function onSubmit(e: React.FormEvent): void {
-    e.preventDefault();
-    // console.log(queryRef.current!.value);
 
-    // userNameRef.current!.value = "";
-    // passwordRef.current!.value = "";
-  }
-
-  function submitMe(e: React.FormEvent): void {
-    e.preventDefault();
-    if (error) {
-      setError("");
-    }
-  }
   // function resetFields(needed: boolean): void {
   //   queryRef.current!.value = "";
   // }
   return (
     <Box
-      w={[350, 500, 500]}
-      h="200px"
+      w="500px"
+      h="250px"
       borderRadius="md"
       display="flex"
       bg="grey"
@@ -61,11 +48,8 @@ export const SearchBar: React.FC<CompProps> = ({
           color="almostw"
           variant="unstyled"
           px={formp}
-          fontSize="xl"
-          textAlign="center"
-          // bg="gray.700"
-          // borderRadius="md"
-        >
+          fontSize="2xl"
+          textAlign="center">
           Please enter your ingridients
         </Text>
         <VStack
@@ -80,11 +64,10 @@ export const SearchBar: React.FC<CompProps> = ({
             variant="flushed"
             px={formp}
             minLength={5}
-            // bg="gray.700"
-            // borderRadius="md"
           />
         </VStack>
         <Button
+          disabled={isDiabled}
           position="relative"
           top="15%"
           left="50%"

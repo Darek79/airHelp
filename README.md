@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## General
 
-## Getting Started
+the main fun is in Content.tsx and the helperFn.tsx file. The rest is build around those two.
 
-First, run the development server:
+## Login screen / Sign up screen
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+-Login screen allows user to switch between has an account and sign up.
+-I created an Input Component which i reuse to render the inputs.
+-When username is taken an error will appear.
+-When username or password has not required length an error message will appear.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Content
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+On the left  side you see a empty list at the beginning. When you enter values the list will get filled. The list is saved at the localstorage, the same for the users.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+List will always have 10 entries.
+I wrapped the clickhandler for the listitems and the submit handler for the form in useCallback.
+this will prevent the clickhandler to be regenerated on each render cycle of the list. the list is wrapped in memo. so also here it will be not generated all the time. of course there would a different approach for the state managment possible, however as its my first try with charka ui its ok for me. the history will be set new, when the data props changed.
+the items are clickable, i tried to add cursor:pointer for the items, but also here becaus of time i didnt wanted waste to much.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+In the middle is the searchbox in which you can enter a searchword. I tried to see if chaining makes sene, for example apple&banana but i always received the result for the first value.
 
-## Learn More
+At the right side you will see the API results that the spoonacular API returns.
 
-To learn more about Next.js, take a look at the following resources:
+when you click on the search results a modal will appear asking to rerun the query. as you will see i added timestamps, i had a approach where i checked the time to the last query but i dumped it cause its not user friendly.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+i could add connect the user with the input in localstorage to have a seperate history for each user. this should be done but is missing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Bonus
 
-## Deploy on Vercel
+as i said its my first app on next js and chakra.
+its hard but at the same time easy to create components, because its so easy to add simply the values everywhere instead of creating standalone reusable components. i created some but saw that for exampe a modal is available. however i wanted to show that in my other apps i do this.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+the api was not hard, i have not used the staticprops hooks cause here i used the localstorage, however in a real app where we load initial products i would use them of course.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+
+

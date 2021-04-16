@@ -1,23 +1,8 @@
-import {Fragment, useRef} from "react";
+import {Fragment} from "react";
 import Head from "next/head";
 import {Form} from "./../components/Form";
 import Link from "next/link";
-import {
-  Grid,
-  GridItem,
-  SimpleGrid,
-  Button,
-  ButtonGroup,
-  Text,
-  Box,
-  useMediaQuery,
-  Input,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Flex,
-} from "@chakra-ui/react";
+import {Box, Flex} from "@chakra-ui/react";
 
 export default function Home() {
   return (

@@ -1,31 +1,13 @@
-import apiHandler from "./../api/hello";
-import axios, {AxiosResponse} from "axios";
 import {
-  Grid,
-  GridItem,
-  SimpleGrid,
-  Button,
-  ButtonGroup,
-  Text,
-  Box,
-  useMediaQuery,
-  Input,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Flex,
-  VStack,
   List,
-  ListItem,
-  ListIcon,
-  OrderedList,
-  UnorderedList,
+  Box,
+  Text,
 } from "@chakra-ui/react";
-import {CheckIcon} from "@chakra-ui/icons";
 import {ErrorComp} from "./../../components/ErrorComp";
+import {LiItem} from "./../../components/ListItems";
+import {Modal} from "./../../components/Modal";
 import {
-  userExists,
   fetchData,
   setItems,
   checkIfValueExists,
@@ -34,49 +16,66 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useCallback,
 } from "react";
-import {useRouter} from "next/router";
+
 import {SearchBar} from "./../../components/SearchBar";
 interface CompProps {
   name?: string;
 }
-interface Data {
-  data: {
-    userId: string;
-    id: number;
-    title: string;
-    body: string;
-    key: string;
-  };
-}
-const Content: React.FC<CompProps> = ({
-  name,
-}): JSX.Element => {
+// interface Data {
+//   data: {
+//     userId: string;
+//     id: number;
+//     title: string;
+//     body: string;
+//     key: string;
+//   };
+// }
+const Content: React.FC<CompProps> = (): JSX.Element => {
   const [data, setData] = useState<any[]>([]);
   const [historyData, setHistory] = useState<
     any[]
   >([]);
   const [error, setError] = useState<string>("");
-  const [spinner, setSpinner] = useState<boolean>(
-    false
-  );
+  const [isOn, setBtn] = useState<boolean>(false);
   const queryRef = useRef<HTMLInputElement | null>(
     null
   );
-  // const router = useRouter();
+  const nodeQueryRef = useRef<HTMLLIElement | null>(
+    null
+  );
 
   useEffect(() => {
+    let olddata: any[] = [];
     const historical = window.localStorage.getItem(
       "queries"
     );
-    if(historical!==null){
-      
+    if (historical !== null) {
+      olddata = JSON.parse(historical);
     }
 
+    if (olddata.length > 0) {
+      setHistory(() => olddata);
+    }
+  }, [data]);
 
-    // setHistory()
-  }, []);
+  function clickHandler(e: React.SyntheticEvent) {
+    const input = e.target as HTMLElement;
+    if (input.textContent !== null) {
+      queryRef.current!.value = input.textContent;
+    }
 
+    setError(
+      () => "Do you want to rerun the query ?"
+    );
+    setBtn((p) => !p);
+  }
+
+  function ModalClickHandler(): void {
+    setError(() => "");
+    setBtn((p) => !p);
+  }
   function submitHandler(
     e: React.FormEvent
   ): void {
@@ -84,17 +83,13 @@ const Content: React.FC<CompProps> = ({
     if (error) {
       setError("");
     }
-    console.log(queryRef.current!.value);
-    setSpinner((p) => !p);
     if (queryRef.current!.value) {
-      console.log(queryRef.current!.value);
       fetchData(
         "/api/hello",
-        "https://jsonplaceholder.typicode.com/posts/1",
+        "&number=2&sort=calories&sortDirection=desc",
         queryRef.current!.value,
         setData,
         setError,
-        setSpinner,
         checkIfValueExists,
         setItems
       );
@@ -104,48 +99,66 @@ const Content: React.FC<CompProps> = ({
       );
     }
 
-    // setSpinner((p) => !p);
     queryRef.current!.value = "";
-    console.log(queryRef.current!.value);
   }
+  const cbClickHandler = useCallback(
+    (e: React.FormEvent) => {
+      clickHandler(e);
+    },
+    []
+  );
+  const cbSubmitHandler = useCallback(
+    (e: React.FormEvent) => {
+      submitHandler(e);
+    },
+    []
+  );
+
   return (
     <Flex bgSize="100%" w="100vw" h="100vh">
       <Box
         w="100%"
         h="100%"
         display="flex"
-        justifyContent="center">
+        justifyContent="center"
+        bg="grey">
         <Box>
-          <List spacing={3}>
-            <ListItem>
-              <ListIcon
-                as={CheckIcon}
-                color="green.500"
-              />
-              Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit
-            </ListItem>
-            <ListItem>
-              <ListIcon
-                as={CheckIcon}
-                color="green.500"
-              />
-              Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit
-            </ListItem>
+          <Text
+            mt="20px"
+            mb="20px"
+            fontSize="lg"
+            color="white">
+            Last 10 queries
+          </Text>
+          <List spacing={3} color="white">
+            {historyData.length > 0 &&
+              historyData.map((el) => {
+                return (
+                  <LiItem
+                    c={`white`}
+                    key={el.query}
+                    r={nodeQueryRef}
+                    msg={el.query}
+                    setFn={cbClickHandler}
+                  />
+                );
+              })}
           </List>
         </Box>
       </Box>
-      <Box
+      <Flex
         w="100%"
         h="100%"
         bg="green"
         display="flex"
-        justifyContent="center">
-        <form onSubmit={submitHandler}>
+        direction="column"
+        justify="start"
+        align="center">
+        <form onSubmit={cbSubmitHandler}>
           <SearchBar
             formp="3"
             userInput={queryRef}
+            isDiabled={isOn}
           />
           {error ? (
             <ErrorComp
@@ -158,10 +171,41 @@ const Content: React.FC<CompProps> = ({
             />
           ) : undefined}
         </form>
-      </Box>
-      <Box w="100%" h="100%">
-        3
-      </Box>
+        {error ===
+          "Do you want to rerun the query ?" ||
+        error.includes("please wait") ? (
+          <Modal
+            txt="Confirm"
+            setFn={ModalClickHandler}
+            modalTxt="To rerun please Submit"
+          />
+        ) : undefined}
+      </Flex>
+      <Flex
+        w="100%"
+        h="100%"
+        direction="column"
+        align="center">
+        <Text
+          mt="20px"
+          mb="20px"
+          fontSize="lg"
+          color="black">
+          Query Results
+        </Text>
+        <List spacing={3} color="white">
+          {data.length > 0 &&
+            data.map((el) => {
+              return (
+                <LiItem
+                  c="black"
+                  key={el.id}
+                  msg={el.name}
+                />
+              );
+            })}
+        </List>
+      </Flex>
     </Flex>
   );
 };

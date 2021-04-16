@@ -1,6 +1,29 @@
 import {extendTheme} from "@chakra-ui/react";
-import {Button} from "./styles/Button";
-import {Input} from "./styles/Input";
+
+// import {ListItem} from "./styles/ListItem";
+
+import {
+  Grid,
+  GridItem,
+  SimpleGrid,
+  Button,
+  ButtonGroup,
+  Text,
+  Box,
+  useMediaQuery,
+  Input,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  Flex,
+  VStack,
+  List,
+  ListItem,
+  ListIcon,
+  OrderedList,
+  UnorderedList,
+} from "@chakra-ui/react";
 import {createBreakpoints} from "@chakra-ui/theme-tools";
 
 const breakpoints = createBreakpoints({
@@ -27,7 +50,37 @@ const theme = extendTheme({
     lachs: "#E4816B",
   },
   components: {
-    Button,
+    Button: {
+      variants: {
+        outline: {
+          boxShadow: "Base",
+          border: "2px solid",
+          borderColor: "white",
+          color: "white",
+          backGroundColor: "gray.900",
+          letterSpacing: "3px",
+          _hover: {
+            background: "green",
+            color: "white",
+            cursor: "pointer",
+          },
+        },
+        solid: {
+          bg: "purple.500",
+          color: "white",
+        },
+      },
+    },
+    List: {
+      variants: {
+        outline: {
+          bg: "blue",
+          _hover: {
+            cursor: "pointer",
+          },
+        },
+      },
+    },
   },
   breakpoints,
 });

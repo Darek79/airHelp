@@ -1,21 +1,6 @@
 import {Form} from "../../components/Form";
 import Link from "next/link";
-import {
-  Grid,
-  GridItem,
-  SimpleGrid,
-  Button,
-  ButtonGroup,
-  Text,
-  Box,
-  useMediaQuery,
-  Input,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Flex,
-} from "@chakra-ui/react";
+import {Box, Flex} from "@chakra-ui/react";
 const Login = (): JSX.Element => {
   return (
     <Flex
@@ -26,7 +11,7 @@ const Login = (): JSX.Element => {
       bg="almostw">
       <Form formp="3" isRegister={false} />
       <Box mt="10px" fontSize="xl">
-        <Link href="/login">
+        <Link href="/">
           PLEASE CLICK HERE TO SIGN UP
         </Link>
       </Box>

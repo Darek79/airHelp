@@ -11,7 +11,7 @@ import {
   Input,
   VStack,
 } from "@chakra-ui/react";
-import Link from "next/link";
+
 
 interface CompProps {
   color?: string;

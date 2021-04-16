@@ -59,10 +59,6 @@ export function setItems(
   switch (isDouble) {
     case true:
       data = [];
-      console.log("here");
-      fnError(
-        () => "Sorry but the query already exists"
-      );
       break;
     case false:
       const queries = window.localStorage.getItem(
@@ -119,9 +115,6 @@ export async function fetchData(
   fnError: React.Dispatch<
     React.SetStateAction<string>
   >,
-  fnSpinner: React.Dispatch<
-    React.SetStateAction<boolean>
-  >,
   fnValueExists: (
     arg: string
   ) => boolean | null | string,
@@ -135,49 +128,29 @@ export async function fetchData(
     ) => boolean | null | string
   ) => {query: string; timeStamp: number}[]
 ) {
-  const dateNow = Math.floor(Date.now() / 1000);
   const dataArr = fnSetLocal(
     query,
     fnError,
     fnValueExists
   );
-  const n =
-    dataArr.length === 1 ? 0 : dataArr.length - 2;
-  if (
-    dataArr.length > 0 &&
-    dateNow - dataArr[n].timeStamp > 300
-  ) {
-    try {
-      const {
-        data: {data},
-      }: AxiosResponse<any> = await axios.post(
-        url,
-        JSON.stringify({data: query, fetchUrl}),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(data);
-      if (data.length === 0) {
-        console.log("spinner");
-        fnSpinner((p) => !p);
+  console.log(dataArr);
+  try {
+    const {
+      data: {data},
+    }: AxiosResponse<any> = await axios.post(
+      url,
+      JSON.stringify({data: query, fetchUrl}),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-      fnSet(() => [data]);
-    } catch (error) {
-      if (error) {
-        fnError(
-          () => "Sorry something went wrong"
-        );
-      }
-    }
-  } else {
-    fnError(
-      () =>
-        `Please wait ${
-          300 - (dateNow - dataArr[n].timeStamp)
-        } seconds, before the next query`
     );
+    console.log(data);
+    fnSet(() => data.results);
+  } catch (error) {
+    if (error) {
+      fnError(() => "Sorry something went wrong");
+    }
   }
 }
